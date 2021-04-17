@@ -13,56 +13,73 @@
 #endif
 
 
-enum LED_States{LED_Start, LED_ZeroOn, LED_ZeroOnWait, LED_OneOn, LED_OneOnWait}LED_State;
 
-void TickFct_LED(){
+enum B_States{B_Start, B_Incr, B_Decr, B_Wait, B_Zero}B_State;
 
-        switch(LED_State){ //transition state
-        case LED_Start:
-        LED_State = LED_ZeroOn;
+void TickFct_B(){
+
+        switch(B_State){ //transition state
+        case B_Start:
+        B_State = B_Wait;
         break;
 
-        case LED_ZeroOn:
-        if(PINA == 0x00){
-        LED_State = LED_ZeroOnWait;
-        }
-        break;
-
-        case LED_ZeroOnWait:
+        case B_Wait:
         if(PINA == 0x01){
-        LED_State = LED_OneOn;
+        B_State = B_Incr;
         }
+	else if(PINA == 0x02){
+	B_State = B_Decr;
+	}
+	else if(PINA == 0x03){
+	B_State = B_Zero;
+	}
         break;
 
-        case LED_OneOn:
+        case B_Incr:
         if(PINA == 0x00){
-        LED_State = LED_OneOnWait;
+        B_State = B_Wait;
         }
+	else if(PINA == 0x03){
+	B_State = B_Zero;
+	}
         break;
 
-        case LED_OneOnWait:
-        if(PINA == 0x01){
-        LED_State = LED_ZeroOn;
+        case B_Decr:
+        if(PINA == 0x00){
+        B_State = B_Wait;
         }
+	else if(PINA == 0x03){
+	B_State = B_Zero;
+	}
+        break;
+
+        case B_Zero:
+        B_State = B_Wait;
         break;
 
         default:
         break;
         }
 
-	switch(LED_State){ //state actions
+	switch(B_State){ //state actions
 
-	case LED_ZeroOn:
-	PORTB = 0x01;
+	case B_Incr:
+	if(PORTC < 9){
+	++PORTC;
+	}
 	break;
 
-	case LED_OneOn:
-	PORTB = 0x02;
+	case B_Decr:
+	if(PORTC > 0){
+	--PORTC;
+	}
 	break;
 
-	case LED_Start:
-	case LED_ZeroOnWait:
-	case LED_OneOnWait:
+	case B_Zero:
+	PORTC = 0x00;
+	break;
+
+	case B_Wait:
 	default:
 	break;
 
@@ -74,13 +91,13 @@ void TickFct_LED(){
 int main(void) {
     
 	DDRA = 0x00;
-	DDRB = 0xFF;
+	DDRC = 0xFF;
 
-	LED_State = LED_Start;
+	B_State = B_Start;
 
     while (1) {
 
-	TickFct_LED();
+	TickFct_B();
 
     }
     return 1;
