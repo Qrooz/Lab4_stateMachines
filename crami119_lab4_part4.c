@@ -42,10 +42,10 @@ void TickFct_DB(){
         break;
 
 	case DB_ToUnlock2:
-	if((PINA == 0x02) && (PORTB == 0x01)){
+	if((PINA == 0x02) && (PORTB == 0x00)){
 	DB_State = DB_Unlock;
 	}
-	else if((PINA == 0x02) && (PORTB == 0x00)){
+	else if((PINA == 0x02) && (PORTB == 0x01)){
 	DB_State = DB_Lock;	
 	}
 	else if(PINA == 0x00){
