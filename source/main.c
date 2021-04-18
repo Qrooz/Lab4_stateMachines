@@ -58,7 +58,6 @@ void TickFct_DB(){
 	case DB_Wait:
 	if(PINA != 0x00){
 	userInput[i] = PINA;
-	++i;
 	}
 	else if(PINA == 0x00){}
 	if(userInput[i] != unlockSeq[i]){
@@ -69,7 +68,9 @@ void TickFct_DB(){
         userInput[3] = 0x00;
         i = 0x00;
         }
-
+	if(PINA != 0x00){
+        ++i;
+        }
 	break;
 
 	case DB_Unlock:
