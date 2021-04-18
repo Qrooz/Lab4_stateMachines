@@ -16,7 +16,7 @@
 	unsigned char i = 0x00;
         char unlockSeq[4]={0x04, 0x01, 0x02, 0x01};
         char userInput[4]={0x00, 0x00, 0x00, 0x00};
-
+	char temp = 0xFF;
 
 
 
@@ -27,7 +27,10 @@ void TickFct_DB(){
         switch(DB_State){ //transition state
      
 	case DB_Wait:
-	if(unlockSeq == userInput){
+	if(PINA == temp){
+	DB_State = DB_Wait;
+	}
+	else if(unlockSeq == userInput){
 	DB_State = DB_Unlock; 
 	}
 	else if(PINA == 0x00){
@@ -36,6 +39,7 @@ void TickFct_DB(){
 	else if((PINA >> 7) == 0x01){
 	DB_State = DB_Lock;
 	}
+	temp = PINA;
 	break;
 
 	case DB_Unlock:	
