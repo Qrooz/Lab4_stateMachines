@@ -17,7 +17,6 @@
         char unlockSeq[4]={0x04, 0x01, 0x02, 0x01};
         char userInput[4]={0x00, 0x00, 0x00, 0x00};
 	char temp = 0xFF;
-	unsigned char j = 0x00;
 
 
 enum DB_States{DB_Wait, DB_Unlock, DB_Lock}DB_State;
@@ -57,22 +56,18 @@ void TickFct_DB(){
 	switch(DB_State){ //state actions
 
 	case DB_Wait:
-	if(userInput[j] == unlockSeq[j]){
-	++j;
-	}
-	else if(PINA != 0x00){
+	if(PINA != 0x00){
 	userInput[i] = PINA;
 	++i;
 	}
 	else if(PINA == 0x00){}
-	else{
+	else if(userInput[i] != unlockSeq[i]){
 
         userInput[0] = 0x00;
         userInput[1] = 0x00;
         userInput[2] = 0x00;
         userInput[3] = 0x00;
         i = 0x00;
-	j = 0x00;
         }
 
 	break;
