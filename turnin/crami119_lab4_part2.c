@@ -48,6 +48,9 @@ void TickFct_B(){
 	if(PINA == 0x00){
 	B_State = B_Wait;
 	}
+	else if(PINA == 0x03){
+	B_State = B_Zero;
+	}
 	break;
 
         case B_Decr:
@@ -62,6 +65,9 @@ void TickFct_B(){
 	case B_DecrWait:
 	if(PINA == 0x00){
 	B_State = B_Wait;
+	}
+	else if (PINA == 0x03){
+	B_State = B_Zero;
 	}
 	break;
 
