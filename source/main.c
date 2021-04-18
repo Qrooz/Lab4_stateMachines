@@ -14,7 +14,7 @@
 
 
 
-enum DB_States{DB_Start, DB_Wait, DB_ToUnlock1, DB_ToUnlock2, DB_Unlock, DB_Lock}DB_State;
+enum DB_States{DB_Start, DB_Wait, DB_ToUnlock1, DB_ToUnlock2, DB_ToUnlock3, DB_Unlock, DB_Lock}DB_State;
 
 void TickFct_DB(){
 
@@ -43,10 +43,19 @@ void TickFct_DB(){
 
 	case DB_ToUnlock2:
 	if(PINA == 0x02){
-	DB_State = DB_Unlock;
+	DB_State = DB_ToUnlock3;
 	}
 	else{
 	DB_State = DB_Wait;
+	}
+	break;
+
+	case DB_ToUnlock3:
+	if(PINA == 0x00){
+	DB_State = DB_Unlock;
+	}
+	else{
+	DB_State = DB_Wait;	
 	}
 	break;
 
