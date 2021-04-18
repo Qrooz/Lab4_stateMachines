@@ -30,7 +30,7 @@ void TickFct_DB(){
 	break;
 
 	case DB_Unlocking:	
-	if(i == 3){
+	if(i == 2){
 	DB_State = DB_Trigger;
 	}	
 	else if(PINA == unlockSeq[i]){
