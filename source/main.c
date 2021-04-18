@@ -68,7 +68,7 @@ void TickFct_DB(){
         userInput[3] = 0x00;
         i = 0x00;
         }
-	if(PINA != 0x00){
+	else{
         ++i;
         }
 	break;
