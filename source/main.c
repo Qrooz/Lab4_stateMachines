@@ -59,7 +59,9 @@ void TickFct_DB(){
 	if(PINA != 0x00){
 	userInput[i] = PINA;
 	}
-	else if(PINA == 0x00){}
+	else if(PINA == 0x00){
+	break;
+	}
 	if(userInput[i] != unlockSeq[i]){
 
         userInput[0] = 0x00;
