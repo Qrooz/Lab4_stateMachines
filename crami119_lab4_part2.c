@@ -36,14 +36,12 @@ void TickFct_B(){
         break;
 
         case B_Incr:
+	B_State = B_IncrWait;
 	if(PINA == 0x03){
 	B_State = B_Zero;
 	}
-	else if(PINA == 0x00){
+	if(PINA == 0x00){
 	B_State = B_Wait;
-	}
-	else{
-	B_State = B_IncrWait;
 	}
         break;
 
