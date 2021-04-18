@@ -64,6 +64,7 @@ void TickFct_DB(){
 	userInput[i] = PINA;
 	++i;
 	}
+	else if(PINA == 0x00){}
 	else{
 
         userInput[0] = 0x00;
