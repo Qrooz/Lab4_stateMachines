@@ -27,7 +27,7 @@ void TickFct_DB(){
         switch(DB_State){ //transition state
      
 	case DB_Wait:
-	if(unlockSeq == userInput){
+	if((unlockSeq[0] == userInput[0]) && (unlockSeq[1] == userInput[1]) && (unlockSeq[2]==userInput[2]) && (unlockSeq[3]==userInput[3])){
 	DB_State = DB_Unlock; 
 	}
 	else if(PINA == 0x00){
