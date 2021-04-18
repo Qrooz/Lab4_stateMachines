@@ -14,92 +14,63 @@
 
 
 
-enum B_States{B_Start, B_Incr, B_IncrWait, B_Decr, B_DecrWait, B_Wait, B_Zero}B_State;
+enum DB_States{DB_Start, DB_Wait, DB_ToUnlock1, DB_ToUnlock2, DB_Unlock, DB_Lock}DB_State;
 
-void TickFct_B(){
+void TickFct_DB(){
 
-        switch(B_State){ //transition state
-        case B_Start:
-        B_State = B_Wait;
+        switch(DB_State){ //transition state
+        case DB_Start:
+        DB_State = DB_Wait;
         break;
 
-        case B_Wait:
-        if(PINA == 0x01){
-        B_State = B_Incr;
+        case DB_Wait:
+        if(PINA == 0x04){
+        DB_State = DB_ToUnlock1;
         }
-	else if(PINA == 0x02){
-	B_State = B_Decr;
-	}
-	else if(PINA == 0x03){
-	B_State = B_Zero;
+	else if((PINA >> 7) == 0x01){
+	DB_State = DB_Lock;
 	}
         break;
 
-        case B_Incr:
-	if(PINA == 0x03){
-	B_State = B_Zero;
+        case DB_ToUnlock1:
+	if(PINA == 0x00){
+	DB_State = DB_ToUnlock2;
 	}
 	else{
-	B_State = B_IncrWait;
+	DB_State = DB_Wait;
 	}
         break;
 
-	case B_IncrWait:
-	if(PINA == 0x00){
-	B_State = B_Wait;
+	case DB_ToUnlock2:
+	if(PINA == 0x02){
+	DB_State = DB_Unlock;
 	}
-	else if(PINA == 0x03){
-	B_State = B_Zero;
+	else{
+	DB_State = DB_Wait;
 	}
 	break;
 
-        case B_Decr:
-	if(PINA == 0x03){
-	B_State = B_Zero;
-	}
-	else{
-	B_State = B_DecrWait;
-	}
-        break;
-
-	case B_DecrWait:
-	if(PINA == 0x00){
-	B_State = B_Wait;
-	}
-	else if (PINA == 0x03){
-	B_State = B_Zero;
-	}
-	break;
-
-        case B_Zero:
-        B_State = B_Wait;
-        break;
+	case DB_Lock:
+	case DB_Unlock:
+	DB_State = DB_Wait;
 
         default:
         break;
         }
 
-	switch(B_State){ //state actions
+	switch(DB_State){ //state actions
 
-	case B_Incr:
-	if(PORTC < 9){
-	++PORTC;
-	}
+	case DB_Unlock:
+	PORTB = 0x01;
 	break;
 
-	case B_Decr:
-	if(PORTC > 0){
-	--PORTC;
-	}
+	case DB_Lock:
+	PORTB = 0x00;
 	break;
 
-	case B_Zero:
-	PORTC = 0x00;
-	break;
-
-	case B_Wait:
-	case B_IncrWait:
-	case B_DecrWait:
+	case DB_Wait:
+	case DB_ToUnlock1:
+	case DB_ToUnlock2:
 	default:
 	break;
 
@@ -111,14 +82,14 @@ void TickFct_B(){
 int main(void) {
     
 	DDRA = 0x00;
-	DDRC = 0xFF;
+	DDRB = 0xFF;
 
-	PORTC = 0x07;
-	B_State = B_Start;
+	PORTB = 0x00;
+	DB_State = DB_Start;
 
     while (1) {
 
-	TickFct_B();
+	TickFct_DB();
 
     }
     return 1;
