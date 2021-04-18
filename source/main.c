@@ -27,6 +27,9 @@ void TickFct_DB(){
 	if(PINA == unlockSeq[i]){
 	DB_State = DB_Unlocking;
 	}
+	else if((PINA >> 7) == 0x01){
+	DB_State = DB_Trigger;
+	}
 	break;
 
 	case DB_Unlocking:	
@@ -70,7 +73,10 @@ void TickFct_DB(){
 	break;
 
 	case DB_Trigger:
-	if(PORTB == 0x00){
+	if((PINA >> 7) == 0x01){
+	PORTB = 0x00;
+	}
+	else if(PORTB == 0x00){
 	PORTB = 0x01;
 	}
 	else if(PORTB == 0x01){
