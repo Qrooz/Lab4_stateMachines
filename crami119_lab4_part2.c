@@ -63,6 +63,7 @@ void TickFct_B(){
 	if(PINA == 0x00){
 	B_State = B_Wait;
 	}
+	break;
 
         case B_Zero:
         B_State = B_Wait;
