@@ -93,6 +93,7 @@ int main(void) {
 	DDRA = 0x00;
 	DDRC = 0xFF;
 
+	PORTC = 0x07;
 	B_State = B_Start;
 
     while (1) {
