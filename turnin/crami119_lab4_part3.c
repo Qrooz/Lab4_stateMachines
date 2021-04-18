@@ -14,14 +14,11 @@
 
 
 
-enum DB_States{DB_Start, DB_Wait, DB_ToUnlock1, DB_ToUnlock2, DB_ToUnlock3, DB_Unlock, DB_Lock}DB_State;
+enum DB_States{DB_Wait, DB_ToUnlock1, DB_ToUnlock2, DB_Unlock, DB_Lock}DB_State;
 
 void TickFct_DB(){
 
         switch(DB_State){ //transition state
-        case DB_Start:
-        DB_State = DB_Wait;
-        break;
 
         case DB_Wait:
         if(PINA == 0x04){
@@ -36,6 +33,9 @@ void TickFct_DB(){
 	if(PINA == 0x00){
 	DB_State = DB_ToUnlock2;
 	}
+	else if(PINA == 0x04){
+	DB_State = DB_ToUnlock1;
+	}
 	else{
 	DB_State = DB_Wait;
 	}
@@ -43,19 +43,13 @@ void TickFct_DB(){
 
 	case DB_ToUnlock2:
 	if(PINA == 0x02){
-	DB_State = DB_ToUnlock3;
+	DB_State = DB_Unlock;
+	}
+	else if(PINA == 0x00){
+	DB_State = DB_ToUnlock2;
 	}
 	else{
 	DB_State = DB_Wait;
-	}
-	break;
-
-	case DB_ToUnlock3:
-	if(PINA == 0x00){
-	DB_State = DB_Unlock;
-	}
-	else{
-	DB_State = DB_Wait;	
 	}
 	break;
 
@@ -94,7 +88,7 @@ int main(void) {
 	DDRB = 0xFF;
 
 	PORTB = 0x00;
-	DB_State = DB_Start;
+	DB_State = DB_Wait;
 
     while (1) {
 
