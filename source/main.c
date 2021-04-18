@@ -15,40 +15,50 @@
 
 	unsigned char i = 0x00;
         char unlockSeq[4]={0x04, 0x01, 0x02, 0x01};
-        char userInput[4]={0x00, 0x00, 0x00, 0x00};
-	char temp = 0xFF;
 
 
-enum DB_States{DB_Wait, DB_Unlock, DB_Lock}DB_State;
+enum DB_States{DB_Wait, DB_Unlocking, DB_Release, DB_Trigger}DB_State;
 
 void TickFct_DB(){
 
         switch(DB_State){ //transition state
      
 	case DB_Wait:
-	if(PINA == temp){
-	DB_State = DB_Wait;
+	if(PINA == unlockSeq[i]){
+	DB_State = DB_Unlocking;
 	}
-	else if(unlockSeq == userInput){
-	DB_State = DB_Unlock; 
+	break;
+
+	case DB_Unlocking:	
+	if(i == 3){
+	DB_State = DB_Trigger;
+	}	
+	else if(PINA == unlockSeq[i]){
+	DB_State = DB_Unlocking;
 	}
 	else if(PINA == 0x00){
+	DB_State = DB_Release;
+	++i;
+	}
+	else{
 	DB_State = DB_Wait;
 	}
-	else if((PINA >> 7) == 0x01){
-	DB_State = DB_Lock;
+	break;
+
+	case DB_Release:
+	if(PINA == 0x00){
+	DB_State = DB_Release;
 	}
-	temp = PINA;
-	break;
-
-	case DB_Unlock:	
-	DB_State = DB_Wait;	
-	break;
-
-	case DB_Lock:
+	else if(PINA == unlockSeq[i]){
+	DB_State = DB_Unlocking;
+	}
+	else{
 	DB_State = DB_Wait;
+	}
 	break;
 
+	case DB_Trigger:
+	DB_State = DB_Wait;
 	default:
 	break;
 	}
@@ -56,31 +66,16 @@ void TickFct_DB(){
 	switch(DB_State){ //state actions
 
 	case DB_Wait:
-	if(PINA != 0x00){
-	userInput[i] = PINA;
-	}
-	else if(PINA == 0x00){
-	break;
-	}
-	if(userInput[i] != unlockSeq[i]){
-
-        userInput[0] = 0x00;
-        userInput[1] = 0x00;
-        userInput[2] = 0x00;
-        userInput[3] = 0x00;
-        i = 0x00;
-        }
-	else{
-        ++i;
-        }
+	i = 0x00;
 	break;
 
-	case DB_Unlock:
+	case DB_Trigger:
+	if(PORTB == 0x00){
 	PORTB = 0x01;
-	break;
-
-	case DB_Lock:
+	}
+	else if(PORTB == 0x01){
 	PORTB = 0x00;
+	}
 	break;
 
 	default:
