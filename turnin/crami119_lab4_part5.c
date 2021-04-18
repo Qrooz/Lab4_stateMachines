@@ -53,7 +53,7 @@ void TickFct_DB(){
 	switch(DB_State){ //state actions
 
 	case DB_Wait:
-	if((userInput[3] != 0x00)||(userInput[3]!= 0x01)){
+	if((userInput[3] != 0x00)||(userInput[3]!= 0x01)||(userInput[2] != 0x02)||(userInput[1]!=0x01)||(userInput[0]!= 0x04) ){
 
 	userInput[0] = 0x00;
 	userInput[1] = 0x00;
