@@ -14,14 +14,11 @@
 
 
 
-enum B_States{B_Start, B_Incr, B_IncrWait, B_Decr, B_DecrWait, B_Wait, B_Zero}B_State;
+enum B_States{B_Incr, B_IncrWait, B_Decr, B_DecrWait, B_Wait, B_Zero}B_State;
 
 void TickFct_B(){
 
         switch(B_State){ //transition state
-        case B_Start:
-        B_State = B_Wait;
-        break;
 
         case B_Wait:
         if(PINA == 0x01){
@@ -136,7 +133,7 @@ int main(void) {
 	DDRC = 0xFF;
 
 	PORTC = 0x07;
-	B_State = B_Start;
+	B_State = B_Wait;
 
     while (1) {
 
