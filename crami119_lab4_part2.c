@@ -14,7 +14,7 @@
 
 
 
-enum B_States{B_Start, B_Incr, B_Decr, B_Wait, B_Zero}B_State;
+enum B_States{B_Start, B_Incr, B_IncrWait, B_Decr, B_DecrWait, B_Wait, B_Zero}B_State;
 
 void TickFct_B(){
 
@@ -36,22 +36,30 @@ void TickFct_B(){
         break;
 
         case B_Incr:
-        if(PINA == 0x00){
-        B_State = B_Wait;
-        }
-	else if(PINA == 0x03){
+	if(PINA == 0x03){
+	B_State = B_Zero;
+	}
+	else{
+	B_State = B_IncrWait;
+	}
+        break;
+
+	case B_IncrWait:
+	if(PINA == 0x00){
+	B_State = B_Wait;
+	}
+	break;
+
+        case B_Decr:
+	if(PINA == 0x03){
 	B_State = B_Zero;
 	}
         break;
 
-        case B_Decr:
-        if(PINA == 0x00){
-        B_State = B_Wait;
-        }
-	else if(PINA == 0x03){
-	B_State = B_Zero;
+	case B_DecrWait:
+	if(PINA == 0x00){
+	B_State = B_Wait;
 	}
-        break;
 
         case B_Zero:
         B_State = B_Wait;
@@ -80,6 +88,8 @@ void TickFct_B(){
 	break;
 
 	case B_Wait:
+	case B_IncrWait:
+	case B_DecrWait:
 	default:
 	break;
 
